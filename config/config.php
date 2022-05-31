@@ -12,7 +12,20 @@ return [
 
     "client_code" => env('CELLULANT_CLIENT_CODE'),
 
-    "baseurl" => " https://developer.tingg.africa"
+    "baseurl" => " https://developer.tingg.africa",
+
+    "countrycode" => env('CELLULANT_COUNTRYCODE'),
+
+
+    "currencycode" => env('CELLULANT_CURRENCYCODE'),
+
+    "paymentWebhookUrl" => env('CELLULANT_WEBHOOK'),
+
+
+    "successRedirectUrl" => env('CELLULANT_SUCCESS_URL'),
+
+    "failedRedirectUrl" => env('CELLULANT_FAILED_REDIRECT_URL')
+
 
 
 ];
