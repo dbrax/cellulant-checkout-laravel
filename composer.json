@@ -1,0 +1,54 @@
+{
+    "name": "epmnzava/cellulant-laravel",
+    "description": "Cellulant with laravel",
+    "keywords": [
+        "epmnzava",
+        "cellulant-laravel"
+    ],
+    "homepage": "https://github.com/epmnzava/cellulant-laravel",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Emmanuel Paul Mnzava",
+            "email": "epmnzava@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/support": "^8.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Epmnzava\\CellulantLaravel\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Epmnzava\\CellulantLaravel\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Epmnzava\\CellulantLaravel\\CellulantLaravelServiceProvider"
+            ],
+            "aliases": {
+                "CellulantLaravel": "Epmnzava\\CellulantLaravel\\CellulantLaravelFacade"
+            }
+        }
+    }
+}
