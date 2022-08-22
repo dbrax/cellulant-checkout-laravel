@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Cellulant;
+namespace Epmnzava\CellulantLaravel;
 
 class Encryption
 {

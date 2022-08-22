@@ -2,14 +2,14 @@
 
 namespace Epmnzava\CellulantLaravel;
 
-use App\Cellulant\Encryption;
+use Epmnzava\CellulantLaravel\Encryption;
 use Epmnzava\CellulantLaravel\Enums\EndpointsEnum;
 
 class CellulantLaravel
 {
 
-    public $baseurl, $express_ivkey, $express_SecretKey, $currencycode, $service_code, $countrycode, $paymentWebhookUrl, $successRedirectUrl, $failedRedirectUrl;
-    public function __construct($baseurl, $express_ivkey, $express_SecretKey, $currencycode, $service_code, $countrycode, $paymentWebhookUrl, $successRedirectUrl, $failedRedirectUrl)
+    public $baseurl, $express_ivkey, $accesskey, $express_SecretKey, $currencycode, $service_code, $countrycode, $paymentWebhookUrl, $successRedirectUrl, $failedRedirectUrl;
+    public function __construct($baseurl, $accesskey, $express_ivkey, $express_SecretKey, $currencycode, $service_code, $countrycode, $paymentWebhookUrl, $successRedirectUrl, $failedRedirectUrl)
     {
         $this->baseurl = $baseurl;
         $this->express_ivkey = $express_ivkey;
@@ -20,6 +20,7 @@ class CellulantLaravel
         $this->paymentWebhookUrl = $paymentWebhookUrl;
         $this->successRedirectUrl = $successRedirectUrl;
         $this->failedRedirectUrl = $failedRedirectUrl;
+        $this->accesskey = $accesskey;
     }
 
 
@@ -66,7 +67,7 @@ class CellulantLaravel
 
         $encrypted_payload = $this->proccessEncryption($data_req);
 
-        $url = $this->baseurl . "/v2/express/?accessKey=" . $this->express_ivkey . "&params=" . $encrypted_payload . "&countryCode=" . $this->countrycode;
+        $url = $this->baseurl . "/v2/express/?accessKey=" . $this->accesskey . "&params=" . $encrypted_payload . "&countryCode=" . $this->countrycode;
 
         return $url;
     }
