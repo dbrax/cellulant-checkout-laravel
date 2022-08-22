@@ -48,6 +48,7 @@ class CellulantLaravel
         $endpoint =  $this->baseurl . "" . EndpointsEnum::CREATE_ORDER;
         $data_req = [
             "merchantTransactionID" => $transactionid,
+            "transactionID" => $transactionid,
             "requestAmount" => $amount,
             "currencyCode" => $this->currencycode,
             "accountNumber" => $accountnumber,
@@ -58,6 +59,7 @@ class CellulantLaravel
             "customerFirstName" => $customer_first_name,
             "customerLastName" => $customer_last_name,
             "MSISDN" => $msisdn,
+            "languageCode" => "en",
             "customerEmail" => $customer_mail,
             "paymentWebhookUrl" => $this->paymentWebhookUrl,
             "successRedirectUrl" => $this->successRedirectUrl,
