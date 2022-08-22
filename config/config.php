@@ -3,6 +3,12 @@
 return [
 
 
+    "express_IVKey" => env('CELLULANT_IV_KEY'),
+
+    "express_SecretKey" => env('CELLULANT_SECRET_KEY'),
+    "access_Key" => env('Access_Key'),
+
+
     "key" => env('CELLULANT_CLIENT_KEY'),
 
     "secret" => env('CELLULANT_CLIENT_SECRET'),

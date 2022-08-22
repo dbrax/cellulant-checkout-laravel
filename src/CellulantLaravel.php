@@ -2,50 +2,34 @@
 
 namespace Epmnzava\CellulantLaravel;
 
+use App\Cellulant\Encryption;
 use Epmnzava\CellulantLaravel\Enums\EndpointsEnum;
 
 class CellulantLaravel
 {
 
-    public $token;
-    public function __construct()
+    public $baseurl, $express_ivkey, $express_SecretKey, $currencycode, $service_code, $countrycode, $paymentWebhookUrl, $successRedirectUrl, $failedRedirectUrl;
+    public function __construct($baseurl, $express_ivkey, $express_SecretKey, $currencycode, $service_code, $countrycode, $paymentWebhookUrl, $successRedirectUrl, $failedRedirectUrl)
     {
+        $this->baseurl = $baseurl;
+        $this->express_ivkey = $express_ivkey;
+        $this->express_SecretKey = $express_SecretKey;
+        $this->currencycode = $currencycode;
+        $this->service_code = $service_code;
+        $this->countrycode = $countrycode;
+        $this->paymentWebhookUrl = $paymentWebhookUrl;
+        $this->successRedirectUrl = $successRedirectUrl;
+        $this->failedRedirectUrl = $failedRedirectUrl;
     }
 
 
-    public function createToken()
+    public function proccessEncryption($payload)
     {
-        $endpoint = config('cellulant-laravel.baseurl') . "" . EndpointsEnum::GET_TOKEN;
 
-        $data_req = ["grant_type" => "client_credentials", "client_id" => config('cellulant-laravel.key'), "client_secret" => config('cellulant-laravel.secret')];
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $endpoint,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $data_req,
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json'
-            ),
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-
-
-        $this->token = json_decode($response)->access_token;
-
-
-        return $this->token;
+        $CheckoutEncryption = new Encryption;
+        return $CheckoutEncryption->encrypt($this->express_ivkey, $this->express_SecretKey, $payload);
     }
+
 
     public function createOrder(
         $transactionid,
@@ -58,49 +42,32 @@ class CellulantLaravel
         $customer_mail,
         $description
     ) {
-        $token = $this->createToken();
+        //$token = $this->createToken();
 
-        $endpoint = config('cellulant-laravel.baseurl') . "" . EndpointsEnum::CREATE_ORDER;
+        $endpoint =  $this->baseurl . "" . EndpointsEnum::CREATE_ORDER;
         $data_req = [
             "merchantTransactionID" => $transactionid,
             "requestAmount" => $amount,
-            "currencyCode" => config('cellulant-laravel.currencycode'),
+            "currencyCode" => $this->currencycode,
             "accountNumber" => $accountnumber,
-            "serviceCode" => config('cellulant-laravel.service_code'),
+            "serviceCode" => $this->service_code,
             "dueDate" => $due_date,
             "requestDescription" => $description,
-            "countryCode" => config('cellulant-laravel.countrycode'),
+            "countryCode" => $this->countrycode,
             "customerFirstName" => $customer_first_name,
             "customerLastName" => $customer_last_name,
             "MSISDN" => $msisdn,
             "customerEmail" => $customer_mail,
-            "paymentWebhookUrl" => config('cellulant-laravel.paymentWebhookUrl'),
-            "successRedirectUrl" => config('cellulant-laravel.successRedirectUrl'),
-            "failRedirectUrl" => config('cellulant-laravel.failedRedirectUrl')
+            "paymentWebhookUrl" => $this->paymentWebhookUrl,
+            "successRedirectUrl" => $this->successRedirectUrl,
+            "failRedirectUrl" => $this->failedRedirectUrl
 
         ];
 
-        $curl = curl_init();
+        $encrypted_payload = $this->proccessEncryption($data_req);
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $endpoint,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $data_req,
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer ' . $this->token,
-                'Content-Type: application/json'
-            ),
-        ));
+        $url = $this->baseurl . "/v2/express/?accessKey=" . $this->express_ivkey . "&params=" . $encrypted_payload . "&countryCode=" . $this->countrycode;
 
-        $response = curl_exec($curl);
-
-        curl_close($curl);
-        echo $response;
+        return $url;
     }
 }
